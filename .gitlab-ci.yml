@@ -4,7 +4,7 @@ stages:
 image: debian:testing-slim
 
 test:unit:
-  stage: run unit tests
+  stage: test
   script:
   - apt-get update && apt-get install -y make
   - make venv
