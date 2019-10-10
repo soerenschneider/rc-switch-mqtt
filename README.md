@@ -74,10 +74,10 @@ $ venv/bin/python3 main.py --id kitchen -c='{"plugs":[{"identifier": "coffeemach
 
 ### switching it on
 ```
-$ mosquitto_pub -h mqtt-t iot/switch/kitchen/coffeemachine/set -m on
+$ mosquitto_pub -h mqtt -t iot/switch/kitchen/coffeemachine/set -m on
 ```
 
 ### switching it off
 ```
-$ mosquitto_pub -h mqtt-t iot/switch/kitchen/coffeemachine/set -m off
+$ mosquitto_pub -h mqtt -t iot/switch/kitchen/coffeemachine/set -m off
 ```
