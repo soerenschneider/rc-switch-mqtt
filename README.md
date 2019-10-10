@@ -86,6 +86,6 @@ $ mosquitto_pub -h mqtt -t iot/switch/kitchen/coffeemachine/set -m off
 ```yaml
 switch:
   - platform: mqtt
-    name: Waterboiler
+    name: Coffeemachine
     command_topic: "iot/switch/kitchen/coffeemachine/set"
 ```
