@@ -1,4 +1,4 @@
-from main import RcSwitch, setup_logging
+from rcswitch import RcSwitch, setup_logging
 import json
 import configargparse
 import unittest
