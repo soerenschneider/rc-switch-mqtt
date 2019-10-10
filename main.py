@@ -9,6 +9,53 @@ from configuration import SwitchConfiguration
 
 from metrics import prom_configured_plugs
 
+class Main:
+    def __init__(self, args):
+        self.args = args
+        self.validate_topic(args.mqtt_topic)
+        self.print_config()
+        self.setup_prometheus()
+        self.topic = self.args.mqtt_topic.format(self.args.id)
+
+    def setup_prometheus(self):
+        """ Starts the prometheus http server. """
+        if self.args.prom_port < 1:
+            logging.info("NOT starting prometheus http server (as prom_port < 1)")
+            return
+
+        logging.info("Starting prometheus http server on port %s", self.args.prom_port)
+        start_http_server(self.args.prom_port)
+        logging.info("Successfully set up prometheus server!")
+
+    def print_config(self):
+        logging.info("Started rc switch mqtt...")
+        logging.info("Using id=%s", self.args.id)
+        logging.info("Using binary=%s", self.args.binary)
+        logging.info("Using binary-off=%s", self.args.binary_off)
+        logging.info("Using plugconfig=%s", self.args.plug_config)
+        logging.info("Using mqtt-host=%s", self.args.mqtt_host)
+        logging.info("Using mqtt-topic=%s", self.args.mqtt_topic)
+        logging.info("Using prom-port=%s", self.args.prom_port)
+        logging.info("Using verbose=%s", self.args.verbose)
+
+    def validate_topic(self, topic):
+        if not topic or '+' not in topic:
+            raise ValueError("No wildcard (+) found in topic.")
+
+    def run(self):
+        config = SwitchConfiguration(self.args.plug_config)
+        prom_configured_plugs.labels(location=self.args.id).set(len(config.plugs))
+        transmitter = Transmitter(configuration=config, binary=self.args.binary, binary_off=self.args.binary_off)
+        mqtt = MqttListener(host=self.args.mqtt_host, location=self.args.id, topic=self.topic, transmitter=transmitter)
+        mqtt.connect()
+
+def setup_logging(args):
+    """ Sets up the logging. """
+    loglevel = logging.INFO
+    if args.verbose:
+        loglevel = logging.DEBUG
+    logging.basicConfig(level=loglevel, format='%(levelname)s\t %(asctime)s %(message)s')
+
 def parse_args():
     """ Parsing command line arguments """
     parser = configargparse.ArgumentParser(prog='tempsensor')
@@ -27,53 +74,10 @@ def parse_args():
     
     return parser.parse_args()
 
-def setup_logging(args):
-    """ Sets up the logging. """
-    loglevel = logging.INFO
-    if args.verbose:
-        loglevel = logging.DEBUG
-    logging.basicConfig(level=loglevel, format='%(levelname)s\t %(asctime)s %(message)s')
-
-def setup_prometheus(args):
-    """ Starts the prometheus http server. """
-    if args.prom_port < 1:
-        logging.info("NOT starting prometheus http server (as prom_port < 1)")
-        return
-
-    logging.info("Starting prometheus http server on port %s", args.prom_port)
-    start_http_server(args.prom_port)
-    logging.info("Successfully set up prometheus server!")
-
-def print_config(args):
-    logging.info("Started rc switch mqtt...")
-    logging.info("Using id=%s", args.id)
-    logging.info("Using binary=%s", args.binary)
-    logging.info("Using binary-off=%s", args.binary_off)
-    logging.info("Using plugconfig=%s", args.plug_config)
-    logging.info("Using mqtt-host=%s", args.mqtt_host)
-    logging.info("Using mqtt-topic=%s", args.mqtt_topic)
-    logging.info("Using prom-port=%s", args.prom_port)
-    logging.info("Using verbose=%s", args.verbose)
-
-def validate_topic(topic):
-    if not topic or '+' not in topic:
-        raise ValueError("No wildcard (+) found in topic.")
-
-def run(args):
-    config = SwitchConfiguration(args.plug_config)
-    prom_configured_plugs.labels(location=args.id).set(len(config.plugs))
-    topic = args.mqtt_topic.format(args.id)
-    sender = Transmitter(configuration=config, binary=args.binary, binary_off=args.binary_off)
-    mqtt = MqttListener(host=args.mqtt_host, location=args.id, topic=topic, transmitter=sender)
-    mqtt.connect()
-
 def main():
     args = parse_args()
-    validate_topic(args.mqtt_topic)
     setup_logging(args)
-    print_config(args)
-    setup_prometheus(args)
-    run(args)
+    Main(args).run()
 
 if __name__=="__main__":
-   main()
+    main()
