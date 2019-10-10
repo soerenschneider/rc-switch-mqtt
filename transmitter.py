@@ -33,4 +33,4 @@ class Transmitter:
         with self.lock:
             cmd = plug_configuration[payload].split()
             logging.debug("Sending '%s' cmd: %s %s", payload, self.binary, cmd)
-            subprocess.Popen([self.binary[payload], *cmd])
+            subprocess.run([self.binary[payload], *cmd])
