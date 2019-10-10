@@ -14,6 +14,6 @@ container:
 clean:
 	podman rm -f mosquitto-rcswitch || true
 
-integration:
+integrationtest:
 	venv/bin/python3 -m unittest itest_*.py
 
