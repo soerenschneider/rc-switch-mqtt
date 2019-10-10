@@ -6,6 +6,7 @@ image: python:3-slim-buster
 test:unit:
   stage: test
   script:
+  - apt-get update && apt-get install -y make
   - make venv
   - make unittest
 
@@ -14,5 +15,6 @@ test:integration:
   services:
   - eclipse-mosquitto
   script:
+  - apt-get update && apt-get install -y make
   - make venv
   - make integrationtest
