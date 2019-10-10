@@ -11,7 +11,7 @@ test:unit:
   - make unittest
 
 test:integration:
-  stage: integration
+  stage: test
   services:
   - eclipse-mosquitto
   script:
