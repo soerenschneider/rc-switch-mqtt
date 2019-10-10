@@ -6,6 +6,6 @@ image: debian:testing-slim
 test:unit:
   stage: test
   script:
-  - apt-get update && apt-get install -y make
+  - apt-get update && apt-get install -y make python3
   - make venv
   - make unittest
