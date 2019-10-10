@@ -81,3 +81,11 @@ $ mosquitto_pub -h mqtt -t iot/switch/kitchen/coffeemachine/set -m on
 ```
 $ mosquitto_pub -h mqtt -t iot/switch/kitchen/coffeemachine/set -m off
 ```
+
+### home assistant integration
+```yaml
+switch:
+  - platform: mqtt
+    name: Waterboiler
+    command_topic: "iot/switch/kitchen/coffeemachine/set"
+```
