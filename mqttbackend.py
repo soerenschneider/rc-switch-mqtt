@@ -83,7 +83,7 @@ class MqttListener:
 
     @backoff.on_exception(backoff.expo,
                       (ConnectionRefusedError),
-                      max_time=5)
+                      max_time=60)
     def connect(self):
         self._client = mqtt.Client()
         self._client.on_connect = self.on_connect
