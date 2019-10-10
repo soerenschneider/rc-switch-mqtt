@@ -15,14 +15,14 @@ class Test_Integration(unittest.TestCase):
 
         self.assertFalse(os.path.isfile(f))
 
-        args = configargparse.Namespace(id="bla",mqtt_topic="iot/switch/{}/+/set",mqtt_host="localhost",binary="touch",binary_off="rm",plug_config=json.loads('{"plugs":[{"identifier": "inttest", "on":"/tmp/rc-switch-integrationtest", "off":"/tmp/rc-switch-integrationtest"}]}'),prom_port=0,verbose=True)
+        args = configargparse.Namespace(id="bla",mqtt_topic="iot/switch/{}/+/set",mqtt_host="eclipse-mosquitto",binary="touch",binary_off="rm",plug_config=json.loads('{"plugs":[{"identifier": "inttest", "on":"/tmp/rc-switch-integrationtest", "off":"/tmp/rc-switch-integrationtest"}]}'),prom_port=0,verbose=True)
         setup_logging(args)
         impl = Main(args)
         thread = Thread(target=self.bla, args = (impl, ))
         thread.start()
         sleep(2)
         client = mqtt.Client()
-        client.connect("localhost", 1883, 60)
+        client.connect("eclipse-mosquitto", 1883, 60)
         client.publish("iot/switch/bla/inttest/set", "on")
         sleep(2)
         self.assertTrue(os.path.isfile(f))

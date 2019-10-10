@@ -9,3 +9,12 @@ test:unit:
   - apt-get update && apt-get install -y make python3 python3-venv python3-pip
   - make venv
   - make unittest
+
+test:integration:
+  stage: integration
+  services:
+  - eclipse-mosquitto
+  script:
+  - apt-get update && apt-get install -y make python3 python3-venv python3-pip
+  - make venv
+  - make unittest
