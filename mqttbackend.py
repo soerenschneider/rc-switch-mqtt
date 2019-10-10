@@ -20,6 +20,7 @@ class MqttListener:
         if port is None:
             port = 1883
         self._port = port
+        self._quit = False
 
         self._topic = topic
         self.topic_regex = topic.replace('+', '(\w+)')
@@ -69,6 +70,9 @@ class MqttListener:
         payload = msg.payload.decode('utf-8').lower()
         self.switch(payload, msg.topic)
 
+    def quit(self):
+        self._quit = True
+
     def publish(self, data):
         logging.debug("Publishing '%s' to %s", data, self._topic)
         try:
@@ -78,16 +82,20 @@ class MqttListener:
             self._prom_msg_error_cnt.labels(self._location).inc()
 
     @backoff.on_exception(backoff.expo,
-                      (ConnectionRefusedError))
+                      (ConnectionRefusedError),
+                      max_time=5)
     def connect(self):
         self._client = mqtt.Client()
         self._client.on_connect = self.on_connect
         self._client.on_message = self.on_message
 
-        logging.info("Async connecting to %s", self._host)
+        logging.info("Async connecting to %s:%d", self._host, self._port)
         self._client.connect_async(self._host, self._port, 60)
+        self._client.loop_start()
         try:
-            self._client.loop_forever()
+            while not self._quit:
+                time.sleep(10)
+            logging.info("Quitting, bye!")
         except KeyboardInterrupt:
             logging.info("Received signal, quitting. Bye!")
 
