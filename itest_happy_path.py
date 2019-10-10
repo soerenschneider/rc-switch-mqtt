@@ -1,4 +1,4 @@
-from main import Main, setup_logging
+from main import RcSwitch, setup_logging
 import json
 import configargparse
 import unittest
@@ -17,7 +17,7 @@ class Test_Integration(unittest.TestCase):
 
         args = configargparse.Namespace(id="bla",mqtt_topic="iot/switch/{}/+/set",mqtt_host="eclipse-mosquitto",binary="touch",binary_off="rm",plug_config=json.loads('{"plugs":[{"identifier": "inttest", "on":"/tmp/rc-switch-integrationtest", "off":"/tmp/rc-switch-integrationtest"}]}'),prom_port=0,verbose=True)
         setup_logging(args)
-        impl = Main(args)
+        impl = RcSwitch(args)
         thread = Thread(target=self.bla, args = (impl, ))
         thread.start()
         sleep(2)

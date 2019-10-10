@@ -72,8 +72,8 @@ def parse_args():
     parser.add_argument('--mqtt-host', action='store', env_var='RC_MQTT_HOST', required=True, help='The mqtt server to connect to')
     parser.add_argument('--mqtt-topic', action='store', env_var='RC_MQTT_TOPIC', default="iot/switch/{}/+/set", help='The topic to subscribe to')
 
-    parser.add_argument('--binary', action='store', env_var='RC_BINARY', required=True, help='Path to the binary to execute when a switch cmd has been received')
-    parser.add_argument('--binary-off', action='store', env_var='RC_BINARY_OFF', help='Path to the binary to execute when a switch "OFF" cmd has been received. If not specified, the same binary is used for "off" and "on". ')
+    parser.add_argument('--binary', action='store', env_var='RC_BINARY', required=True, help='The binary to execute when a switch cmd has been received')
+    parser.add_argument('--binary-off', action='store', env_var='RC_BINARY_OFF', help='The binary to execute when a switch OFF cmd has been received. If not specified, the same binary for switching off and on is used. ')
 
     parser.add_argument('--prom-port', action="store", env_var="RC_PROMPORT", type=int, default=9193, help='The port of the prometheus http server. If you do not want to run a prometheus server, supply a value < 1.')
     parser.add_argument('--verbose', action="store_true", help='Logs debug messages.')
