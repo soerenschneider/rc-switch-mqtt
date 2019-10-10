@@ -7,7 +7,7 @@ import backoff
 import paho.mqtt.client as mqtt
 
 from configuration import ON, OFF
-from metrics import prom_msg_error_cnt, prom_reconnects
+from metrics import prom_msg_error_cnt, prom_reconnects, prom_switch_operations
 
 class MqttListener:
     def __init__(self, host, location, topic, transmitter, port=None):
@@ -44,16 +44,21 @@ class MqttListener:
 
     def switch(self, payload, topic):
         if payload not in [ON, OFF]:
-            logging.warn("Payload not valid")
+            cause = 'Invalid payload'
+            prom_msg_error_cnt.labels(location=self._location, cause=cause).inc()
+            logging.warn('Invalid payload')
             return
 
         try:
             plug_name = self.extract_plug_name(topic)
             if not plug_name:
-                logging.error("Could not extract plug name from topic")
+                cause = 'Could not extract plug name from topic'
+                prom_msg_error_cnt.labels(location=self._location, cause=cause).inc()
+                logging.error(cause)
                 return
 
             self._sender.send_signal(plug_name, payload)
+            prom_switch_operations.labels(location=self._location, operation=payload)
         except ValueError as e:
             logging.error("Invalid message format: %s", e)
         except Exception as e:

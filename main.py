@@ -7,6 +7,8 @@ from mqttbackend import MqttListener
 from transmitter import Transmitter
 from configuration import SwitchConfiguration
 
+from metrics import prom_configured_plugs
+
 def parse_args():
     """ Parsing command line arguments """
     parser = configargparse.ArgumentParser(prog='tempsensor')
@@ -59,6 +61,7 @@ def validate_topic(topic):
 
 def run(args):
     config = SwitchConfiguration(args.plug_config)
+    prom_configured_plugs.labels(location=args.id).set(len(config.plugs))
     topic = args.mqtt_topic.format(args.id)
     sender = Transmitter(configuration=config, binary=args.binary, binary_off=args.binary_off)
     mqtt = MqttListener(host=args.mqtt_host, location=args.id, topic=topic, transmitter=sender)
