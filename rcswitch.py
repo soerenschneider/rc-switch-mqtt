@@ -82,9 +82,9 @@ def parse_args():
 
 def main():
     args = parse_args()
+    setup_logging(args)
     print_config(args)
     start_prometheus_server(args)
-    setup_logging(args)
     RcSwitch(args).run()
 
 if __name__=="__main__":
