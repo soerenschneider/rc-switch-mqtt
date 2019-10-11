@@ -33,4 +33,9 @@ class Transmitter:
         with self.lock:
             cmd = plug_configuration[payload].split()
             logging.debug("Sending '%s' cmd: %s %s", payload, self.binary, cmd)
-            subprocess.run([self.binary[payload], *cmd])
+            try:
+                proc = subprocess.run([self.binary[payload], *cmd], timeout=5, check=True)
+            except subprocess.CalledProcessError as e:
+                logging.error(e)
+            except subprocess.TimeoutExpired as e:
+                logging.error(e)
