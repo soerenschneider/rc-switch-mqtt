@@ -33,5 +33,5 @@ class SwitchConfiguration:
             if plug[IDENTIFIER] == plug_name:
                 return plug
 
-        logging.info("Did not find plug %s in plugs", self.plugs)
+        logging.info("Did not find plug %s in plugs", plug_name)
         return None
