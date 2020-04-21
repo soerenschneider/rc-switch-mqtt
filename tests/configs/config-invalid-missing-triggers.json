@@ -1,0 +1,10 @@
+{
+	"mqttcommander": {
+		"topics": [
+            {
+				"topic1": {
+				}
+			}
+		]
+	}
+}

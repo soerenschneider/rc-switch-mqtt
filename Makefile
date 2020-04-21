@@ -6,7 +6,7 @@ venv:
 	venv/bin/pip3 install -r requirements.txt
 
 unittest:
-	venv/bin/python3 -m unittest
+	venv/bin/python3 -m unittest tests/test_*.py
 
 container:
 	podman run -it --name mosquitto-rcswitch -p 1883:1883 -p 9001:9001 eclipse-mosquitto

@@ -1,0 +1,17 @@
+{
+	"mqttcommander": {
+		"topic": [
+            {
+				"topic1": {
+					"on": ["sleep", "30"],
+					"off": ["touch", "/tmp/test"]
+				}
+			},
+			{
+				"topic2": {
+					"": ["touch", "/tmp/bla"]
+				}
+			}
+		]
+	}
+}
