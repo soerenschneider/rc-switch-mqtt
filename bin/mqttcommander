@@ -1,0 +1,4 @@
+#!/bin/sh
+
+DIR=$(dirname "$(readlink -f "$0")")
+PYTHONPATH=${DIR}/.. ${DIR}/../venv/bin/python3 ${DIR}/../mqttcommander "$@"
