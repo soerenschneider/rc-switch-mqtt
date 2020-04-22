@@ -18,7 +18,7 @@ def _setup_logging(verbose=False) -> None:
 
 
 def _print_config(args: configargparse.Namespace) -> None:
-    logging.info("Started rc switch mqtt...")
+    logging.info("Started mqttcommander")
     logging.info("Using id=%s", args.id)
     logging.info("Using config=%s", args.config)
     logging.info("Using mqtt-host=%s", args.mqtt_host)
